@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 /**
  * TicTacToe.java
- * UC3: Accept User Slot Input (1-9)
- * Goal: Allow the user to enter a slot number between 1 and 9.
+ * UC4: Convert Slot Number (1-9) to Board Index (Row, Column)
+ * Goal: Convert user-entered slot number into row and column indices.
  */
 public class TicTacToe {
 
@@ -14,28 +14,41 @@ public class TicTacToe {
     static char computerSymbol;
 
     public static void main(String[] args) {
-        // --- UC2: Toss ---
+        // --- Previous UCs ---
         tossAndAssignSymbols();
         displayTossResult();
-        
-        // --- UC1: Board Setup ---
         initializeBoard();
         printBoard();
 
-        // --- UC3: Get Input ---
-        // For testing UC3, we just call the method and print the result.
+        // --- UC3 & UC4: Get Input and Convert to Indices ---
         if (isHumanTurn) {
              int slot = getUserSlot();
-             System.out.println("Slot entered: " + slot);
+             
+             // Convert slot to zero-based 2D indices 
+             int row = getRowFromSlot(slot); 
+             int col = getColFromSlot(slot); 
+             
+             System.out.println("Row: " + row); 
+             System.out.println("Column: " + col); 
         }
     }
 
     /**
-     * Reads an integer slot value from the user.
-     * Input: Scanner object
-     * Output: Slot number (1-9)
-     * Hint: Validation will be added in later use cases.
+     * Converts a slot number (1-9) to a row index (0-2). [cite: 1077]
      */
+    static int getRowFromSlot(int slot) { 
+        return (slot - 1) / 3; 
+    }
+
+    /**
+     * Converts a slot number (1-9) to a column index (0-2). [cite: 1078]
+     */
+    static int getColFromSlot(int slot) { 
+        return (slot - 1) % 3;
+    }
+
+    // --- Methods from UC1, UC2 & UC3 ---
+    
     static int getUserSlot() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter a slot number (1-9): ");
@@ -43,8 +56,6 @@ public class TicTacToe {
         return slot;
     }
 
-    // --- Methods from UC1 & UC2 ---
-    
     static void tossAndAssignSymbols() {
         Random random = new Random();
         int tossResult = random.nextInt(2);
