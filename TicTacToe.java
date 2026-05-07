@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 /**
  * TicTacToe.java
- * UC5: Validate User Move
- * Goal: Ensure the move is within bounds and the cell is empty. [cite: 1086]
+ * UC6: Place Move on Board
+ * Goal: Update the board with the given symbol. [cite: 1121, 1122]
  */
 public class TicTacToe {
 
@@ -14,49 +14,54 @@ public class TicTacToe {
     static char computerSymbol;
 
     public static void main(String[] args) {
-        // --- Setup ---
+        // --- Setup (UC1 & UC2) ---
         tossAndAssignSymbols();
         displayTossResult();
         initializeBoard();
         printBoard();
 
-        // --- UC3, UC4 & UC5: Get Input, Convert, and Validate ---
+        // --- Gameplay Loop (UC3, UC4, UC5 & UC6) ---
         if (isHumanTurn) {
              int slot = getUserSlot();
              int row = getRowFromSlot(slot);
              int col = getColFromSlot(slot);
              
-             // Check if the move is valid before proceeding
              if (isValidMove(row, col)) {
                  System.out.println("Valid move! Processing...");
-                 // Future UC: Actually place the piece here
+                 
+                 // UC6: Place the move and show the updated board
+                 placeMove(row, col, humanSymbol);
+                 printBoard();
              } else {
                  System.out.println("Invalid move. That slot is either taken or out of bounds.");
              }
+        } else {
+             System.out.println("Computer is thinking...");
+             // Future UC: Computer logic goes here
         }
     }
 
     /**
-     * Checks if the given row and column are within bounds
-     * and if the target cell is empty.
-     * Input: row, column
-     * Output: true if valid, false otherwise. [cite: 1112]
+     * Updates the board by placing the given symbol at
+     * the specified row and column. [cite: 1146, 1147]
+     * Input: Row, Column, Symbol [cite: 1148]
+     * Hint: Assume the move is already validated. 
      */
+    static void placeMove(int row, int col, char symbol) {
+        board[row][col] = symbol;
+    }
+
+    // --- Methods from UC1 to UC5 ---
+    
     static boolean isValidMove(int row, int col) {
-        // Boundary Checking: Ensure row and column must be 0-2 [cite: 1093, 1096]
         if (row < 0 || row > 2 || col < 0 || col > 2) {
             return false;
         }
-        
-        // Defensive Programming: Ensure the cell is empty [cite: 1094, 1097]
         if (board[row][col] != '-') {
             return false;
         }
-        
         return true;
     }
-
-    // --- Methods from UC1 to UC4 ---
     
     static int getRowFromSlot(int slot) {
         return (slot - 1) / 3; 
