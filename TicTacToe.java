@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 /**
  * TicTacToe.java
- * UC9: Check Winning Condition
- * Goal: Detect if a player has won the game by checking rows, columns, and diagonals.
+ * UC10: Detect Draw Condition
+ * Goal: Detect when no moves remain and no winner exists.
  */
 public class TicTacToe {
 
@@ -15,6 +15,8 @@ public class TicTacToe {
     static boolean gameOver = false; 
 
     public static void main(String[] args) {
+        System.out.println("Welcome to Tic-Tac-Toe!\n");
+        
         // --- Setup ---
         tossAndAssignSymbols();
         displayTossResult();
@@ -34,12 +36,11 @@ public class TicTacToe {
                     placeMove(row, col, humanSymbol);
                     printBoard();
                     
-                    // UC9: Check if the human won
                     if (hasWon(humanSymbol)) {
                         System.out.println("Congratulations! You win!");
                         gameOver = true;
-                    } else if (checkDraw()) {
-                        System.out.println("It's a draw!");
+                    } else if (isDraw()) { // UC10: Updated method call
+                        System.out.println("It's a draw! Well played.");
                         gameOver = true;
                     } else {
                         isHumanTurn = false;
@@ -54,12 +55,11 @@ public class TicTacToe {
                 computerMove();
                 printBoard();
                 
-                // UC9: Check if the computer won
                 if (hasWon(computerSymbol)) {
                     System.out.println("Computer wins! Better luck next time.");
                     gameOver = true;
-                } else if (checkDraw()) {
-                    System.out.println("It's a draw!");
+                } else if (isDraw()) { // UC10: Updated method call
+                    System.out.println("It's a draw! Well played.");
                     gameOver = true;
                 } else {
                     isHumanTurn = true;
@@ -71,50 +71,33 @@ public class TicTacToe {
     }
 
     /**
-     * Checks all possible winning patterns for the given symbol.
-     * Input: Player symbol ('X' or 'O')
-     * Output: true if win detected.
+     * Traverses the board to check for any remaining empty cells.
+     * Output: true if draw, false otherwise.
      */
-    static boolean hasWon(char symbol) {
-        // Loop-Based Checks: Rows and Columns
-        for (int i = 0; i < 3; i++) {
-            // Check Row 'i'
-            if (board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) {
-                return true;
-            }
-            // Check Column 'i'
-            if (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol) {
-                return true;
-            }
-        }
-
-        // Logical Conditions: Diagonals
-        // Top-left to bottom-right
-        if (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol) {
-            return true;
-        }
-        // Top-right to bottom-left
-        if (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol) {
-            return true;
-        }
-
-        // If no patterns match, they haven't won yet
-        return false;
-    }
-
-    // --- Placeholder for UC10 ---
-    static boolean checkDraw() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] == '-') {
-                    return false; 
+    static boolean isDraw() {
+        // Loop Traversal: Check every single cell
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                if (board[r][c] == '-') {
+                    return false; // Found an empty cell, so it is NOT a draw yet
                 }
             }
         }
-        return true; 
+        return true; // No empty cells found, it MUST be a draw
     }
 
-    // --- Methods from UC1 to UC7 ---
+    // --- Methods from UC1 to UC9 ---
+    
+    static boolean hasWon(char symbol) {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) return true;
+            if (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol) return true;
+        }
+        if (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol) return true;
+        if (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol) return true;
+        return false;
+    }
+
     static void computerMove() {
         Random random = new Random();
         while (true) {
