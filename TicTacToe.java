@@ -1,38 +1,52 @@
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * TicTacToe.java
- * UC2: Toss to Decide First Player and Symbol
- * Goal: Randomly decide who plays first and assign symbols (X or O).
+ * UC3: Accept User Slot Input (1-9)
+ * Goal: Allow the user to enter a slot number between 1 and 9.
  */
 public class TicTacToe {
 
-    // 2D Array: Represents the 3x3 board
     static char[][] board = new char[3][3];
-    
-    // Game State Variables
     static boolean isHumanTurn;
     static char humanSymbol;
     static char computerSymbol;
 
     public static void main(String[] args) {
-        // First we decide the players and symbols
+        // --- UC2: Toss ---
         tossAndAssignSymbols();
         displayTossResult();
         
-        // Then initialize and show the board
+        // --- UC1: Board Setup ---
         initializeBoard();
         printBoard();
+
+        // --- UC3: Get Input ---
+        // For testing UC3, we just call the method and print the result.
+        if (isHumanTurn) {
+             int slot = getUserSlot();
+             System.out.println("Slot entered: " + slot);
+        }
     }
 
     /**
-     * Randomly decides who starts and assigns 'X' and 'O'.
-     * The first player gets 'X', the second gets 'O'.
+     * Reads an integer slot value from the user.
+     * Input: Scanner object
+     * Output: Slot number (1-9)
+     * Hint: Validation will be added in later use cases.
      */
+    static int getUserSlot() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter a slot number (1-9): ");
+        int slot = scanner.nextInt();
+        return slot;
+    }
+
+    // --- Methods from UC1 & UC2 ---
+    
     static void tossAndAssignSymbols() {
         Random random = new Random();
-        
-        // Generate 0 or 1. If 0, human starts. If 1, computer starts.
         int tossResult = random.nextInt(2);
         
         if (tossResult == 0) {
@@ -46,9 +60,6 @@ public class TicTacToe {
         }
     }
 
-    /**
-     * Displays the result of the toss to the console.
-     */
     static void displayTossResult() {
         if (isHumanTurn) {
             System.out.println("You won the toss! You play first.");
@@ -60,8 +71,6 @@ public class TicTacToe {
         System.out.println();
     }
 
-    // --- Methods from UC1 ---
-    
     static void initializeBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
