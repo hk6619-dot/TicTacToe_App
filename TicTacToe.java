@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 /**
  * TicTacToe.java
- * UC6: Place Move on Board
- * Goal: Update the board with the given symbol. [cite: 1121, 1122]
+ * UC7: Computer Makes a Random Move (Easy Level)
+ * Goal: Allow the computer to make a random valid move. [cite: 1158]
  */
 public class TicTacToe {
 
@@ -20,39 +20,59 @@ public class TicTacToe {
         initializeBoard();
         printBoard();
 
-        // --- Gameplay Loop (UC3, UC4, UC5 & UC6) ---
+        // --- Gameplay Testing ---
         if (isHumanTurn) {
+             System.out.println("--- Human Turn ---");
              int slot = getUserSlot();
              int row = getRowFromSlot(slot);
              int col = getColFromSlot(slot);
              
              if (isValidMove(row, col)) {
-                 System.out.println("Valid move! Processing...");
-                 
-                 // UC6: Place the move and show the updated board
                  placeMove(row, col, humanSymbol);
                  printBoard();
              } else {
-                 System.out.println("Invalid move. That slot is either taken or out of bounds.");
+                 System.out.println("Invalid move. That slot is taken.");
              }
         } else {
+             // UC7: Triggering the computer move 
+             System.out.println("--- Computer Turn ---");
              System.out.println("Computer is thinking...");
-             // Future UC: Computer logic goes here
+             computerMove();
+             printBoard();
         }
     }
 
     /**
-     * Updates the board by placing the given symbol at
-     * the specified row and column. [cite: 1146, 1147]
-     * Input: Row, Column, Symbol [cite: 1148]
-     * Hint: Assume the move is already validated. 
+     * Generates random slot values until a valid move is found,
+     * then places the computer symbol on the board.
      */
+    static void computerMove() {
+        Random random = new Random();
+        
+        // Loop Until Valid: Keep trying until we find an empty spot [cite: 1165]
+        while (true) {
+            // Generate a random slot from 1 to 9 
+            int slot = random.nextInt(9) + 1; 
+            
+            // Logic Reuse: Convert slot to row and col [cite: 1166]
+            int row = getRowFromSlot(slot);
+            int col = getColFromSlot(slot);
+            
+            // Ensure move validity using our existing method [cite: 1169]
+            if (isValidMove(row, col)) {
+                System.out.println("Computer chose slot: " + slot);
+                placeMove(row, col, computerSymbol); // Place the move 
+                break; // Exit the loop once a valid move is placed
+            }
+        }
+    }
+
+    // --- Methods from UC1 to UC6 ---
+    
     static void placeMove(int row, int col, char symbol) {
         board[row][col] = symbol;
     }
 
-    // --- Methods from UC1 to UC5 ---
-    
     static boolean isValidMove(int row, int col) {
         if (row < 0 || row > 2 || col < 0 || col > 2) {
             return false;
