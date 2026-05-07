@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 /**
  * TicTacToe.java
- * UC7: Computer Makes a Random Move (Easy Level)
- * Goal: Allow the computer to make a random valid move. [cite: 1158]
+ * UC8: Continuous Turn-Based Game Loop
+ * Goal: Continue gameplay until win or draw is detected.
  */
 public class TicTacToe {
 
@@ -12,6 +12,9 @@ public class TicTacToe {
     static boolean isHumanTurn;
     static char humanSymbol;
     static char computerSymbol;
+    
+    // Game State Flag: Controls the main game loop [cite: 1209]
+    static boolean gameOver = false; 
 
     public static void main(String[] args) {
         // --- Setup (UC1 & UC2) ---
@@ -20,54 +23,92 @@ public class TicTacToe {
         initializeBoard();
         printBoard();
 
-        // --- Gameplay Testing ---
-        if (isHumanTurn) {
-             System.out.println("--- Human Turn ---");
-             int slot = getUserSlot();
-             int row = getRowFromSlot(slot);
-             int col = getColFromSlot(slot);
-             
-             if (isValidMove(row, col)) {
-                 placeMove(row, col, humanSymbol);
-                 printBoard();
-             } else {
-                 System.out.println("Invalid move. That slot is taken.");
-             }
-        } else {
-             // UC7: Triggering the computer move 
-             System.out.println("--- Computer Turn ---");
-             System.out.println("Computer is thinking...");
-             computerMove();
-             printBoard();
+        // --- UC8: The Game Loop ---
+        while (!gameOver) {
+            
+            if (isHumanTurn) {
+                System.out.println("--- Human Turn ---");
+                int slot = getUserSlot();
+                int row = getRowFromSlot(slot);
+                int col = getColFromSlot(slot);
+                
+                if (isValidMove(row, col)) {
+                    placeMove(row, col, humanSymbol);
+                    printBoard();
+                    
+                    // Check for end conditions
+                    if (checkWin(humanSymbol)) {
+                        System.out.println("You win!");
+                        gameOver = true;
+                    } else if (checkDraw()) {
+                        System.out.println("It's a draw!");
+                        gameOver = true;
+                    } else {
+                        // Turn Switching
+                        isHumanTurn = false;
+                    }
+                } else {
+                    System.out.println("Invalid move. That slot is taken or out of bounds. Try again.");
+                }
+                
+            } else {
+                System.out.println("--- Computer Turn ---");
+                System.out.println("Computer is thinking...");
+                computerMove();
+                printBoard();
+                
+                // Check for end conditions
+                if (checkWin(computerSymbol)) {
+                    System.out.println("Computer wins!");
+                    gameOver = true;
+                } else if (checkDraw()) {
+                    System.out.println("It's a draw!");
+                    gameOver = true;
+                } else {
+                    // Turn Switching
+                    isHumanTurn = true;
+                }
+            }
         }
+        
+        System.out.println("Game Over!");
     }
 
-    /**
-     * Generates random slot values until a valid move is found,
-     * then places the computer symbol on the board.
-     */
+    // --- Placeholder Methods for Future UCs ---
+    
+    static boolean checkWin(char symbol) {
+        // Stub: Will be implemented in the next UC
+        return false; 
+    }
+
+    static boolean checkDraw() {
+        // Basic check to prevent an infinite loop if the board fills up
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == '-') {
+                    return false; // Found an empty spot, not a draw yet
+                }
+            }
+        }
+        return true; // No empty spots left
+    }
+
+    // --- Methods from UC1 to UC7 ---
+
     static void computerMove() {
         Random random = new Random();
-        
-        // Loop Until Valid: Keep trying until we find an empty spot [cite: 1165]
         while (true) {
-            // Generate a random slot from 1 to 9 
             int slot = random.nextInt(9) + 1; 
-            
-            // Logic Reuse: Convert slot to row and col [cite: 1166]
             int row = getRowFromSlot(slot);
             int col = getColFromSlot(slot);
             
-            // Ensure move validity using our existing method [cite: 1169]
             if (isValidMove(row, col)) {
                 System.out.println("Computer chose slot: " + slot);
-                placeMove(row, col, computerSymbol); // Place the move 
-                break; // Exit the loop once a valid move is placed
+                placeMove(row, col, computerSymbol);
+                break; 
             }
         }
     }
-
-    // --- Methods from UC1 to UC6 ---
     
     static void placeMove(int row, int col, char symbol) {
         board[row][col] = symbol;
