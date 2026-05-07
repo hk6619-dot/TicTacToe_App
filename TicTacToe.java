@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 /**
  * TicTacToe.java
- * UC4: Convert Slot Number (1-9) to Board Index (Row, Column)
- * Goal: Convert user-entered slot number into row and column indices.
+ * UC5: Validate User Move
+ * Goal: Ensure the move is within bounds and the cell is empty. [cite: 1086]
  */
 public class TicTacToe {
 
@@ -14,53 +14,67 @@ public class TicTacToe {
     static char computerSymbol;
 
     public static void main(String[] args) {
-        // --- Previous UCs ---
+        // --- Setup ---
         tossAndAssignSymbols();
         displayTossResult();
         initializeBoard();
         printBoard();
 
-        // --- UC3 & UC4: Get Input and Convert to Indices ---
+        // --- UC3, UC4 & UC5: Get Input, Convert, and Validate ---
         if (isHumanTurn) {
              int slot = getUserSlot();
+             int row = getRowFromSlot(slot);
+             int col = getColFromSlot(slot);
              
-             // Convert slot to zero-based 2D indices 
-             int row = getRowFromSlot(slot); 
-             int col = getColFromSlot(slot); 
-             
-             System.out.println("Row: " + row); 
-             System.out.println("Column: " + col); 
+             // Check if the move is valid before proceeding
+             if (isValidMove(row, col)) {
+                 System.out.println("Valid move! Processing...");
+                 // Future UC: Actually place the piece here
+             } else {
+                 System.out.println("Invalid move. That slot is either taken or out of bounds.");
+             }
         }
     }
 
     /**
-     * Converts a slot number (1-9) to a row index (0-2). [cite: 1077]
+     * Checks if the given row and column are within bounds
+     * and if the target cell is empty.
+     * Input: row, column
+     * Output: true if valid, false otherwise. [cite: 1112]
      */
-    static int getRowFromSlot(int slot) { 
+    static boolean isValidMove(int row, int col) {
+        // Boundary Checking: Ensure row and column must be 0-2 [cite: 1093, 1096]
+        if (row < 0 || row > 2 || col < 0 || col > 2) {
+            return false;
+        }
+        
+        // Defensive Programming: Ensure the cell is empty [cite: 1094, 1097]
+        if (board[row][col] != '-') {
+            return false;
+        }
+        
+        return true;
+    }
+
+    // --- Methods from UC1 to UC4 ---
+    
+    static int getRowFromSlot(int slot) {
         return (slot - 1) / 3; 
     }
 
-    /**
-     * Converts a slot number (1-9) to a column index (0-2). [cite: 1078]
-     */
-    static int getColFromSlot(int slot) { 
+    static int getColFromSlot(int slot) {
         return (slot - 1) % 3;
     }
-
-    // --- Methods from UC1, UC2 & UC3 ---
     
     static int getUserSlot() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter a slot number (1-9): ");
-        int slot = scanner.nextInt();
-        return slot;
+        return scanner.nextInt();
     }
 
     static void tossAndAssignSymbols() {
         Random random = new Random();
-        int tossResult = random.nextInt(2);
-        
-        if (tossResult == 0) {
+        if (random.nextInt(2) == 0) {
             isHumanTurn = true;
             humanSymbol = 'X';
             computerSymbol = 'O';
